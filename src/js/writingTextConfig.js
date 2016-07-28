@@ -2,7 +2,7 @@ function WritingText(){
     var me = this;
 
 
-    me.writeText = function(){
+    this.writeText = function(){
         var csvFileName = document.getElementById('csvFile').value;
         var gameName = document.getElementById('gameId').value;
         var betLines = document.getElementById('betLinesNum').value;

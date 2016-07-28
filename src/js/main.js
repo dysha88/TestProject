@@ -1,4 +1,6 @@
 var reel = new ReelConfig();
+var reel1 = new ReelConfig();
+var reel2 = new ReelConfig();
 var text = new WritingText();
 
 
@@ -24,7 +26,9 @@ var text = new WritingText();
 
 function done(){
     text.writeText();
-    reel.getElements();
+    reel.getElements('SYM9', CONFIG.betLines[0], false, false);
+    reel1.getElements('SYM9', CONFIG.betLines[0], true, false);
+    //reel2.getElements('SYM9', CONFIG.betLines[0], true, true);
 }
 
 
