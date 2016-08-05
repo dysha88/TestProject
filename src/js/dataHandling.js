@@ -1,5 +1,10 @@
 function DataHandling(){
     var me = this;
+    this.outcomePos = [];
+
+    this.getPosition = function (outcome) {
+        me.outcomePos = outcome;
+    };
 
     this.getData = function(){
         var i;
@@ -20,4 +25,56 @@ function DataHandling(){
         //
         //}
     };
+
+    this.verifyBetLines = function(){
+        var i, j,
+            winSym = [];
+        for(i = 0; i < CONFIG.reels.length; i++){
+            winSym[i] = [];
+            for(j = 0; j < CONFIG.row; j++){
+                if((reelStopPos[i] + j) < CONFIG.reels[i].length) {
+                    winSym[i].push(CONFIG.reels[i][me.outcomePos[i][j][k][0] + j]);
+                }
+                if((reelStopPos[i] + j) >= CONFIG.reels[i].length) {
+                    winSym[i].push(CONFIG.reels[i][(reelStopPos[i] + j) - CONFIG.reels[i].length]);
+                }
+            }
+        }
+        console.log(winSym);
+
+        var arr = [],
+            n, k,
+            win = 0,
+            numberOfBetLines = [];
+
+        function verify(params){
+            for(k = 0; params[k] == params[k+1]; k++){}
+            return k;
+        }
+
+
+        for(i = 0; i < CONFIG.betLines.length; i++) {
+            arr[i] = [];
+            for(j = 0; j < CONFIG.reels.length; j++){
+                arr[i].push(winSym[j][CONFIG.betLines[i][j]]);
+            }
+
+            //console.log(arr[i]);
+            n = verify(arr[i]);
+
+            if (n > 1) {
+                numberOfBetLines.push(i);
+                for(j = 0; j < CONFIG.payOut.length; j++){
+                    if(arr[i][0] == CONFIG.payOut[j].sym){
+                        win += CONFIG.payOut[j]['x'+n]*CONFIG.betLevel;
+                    }
+                }
+            }
+        }
+    };
+
+    addListener('setPosition', me.getPosition);
+
 }
+
+

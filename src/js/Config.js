@@ -43,17 +43,14 @@ var CONFIG = {
         [2, 2, 0, 2, 2]
     ],
     payOut: [
-        {sym: 'SYM0', x3: 4, x4: 21, x5: 75},
-        {sym: 'SYM1', x3: 200, x4: 1800, x5: 5500},
-        {sym: 'SYM2', x3: 30, x4: 1, x5: 1},
-        {sym: 'SYM3', x3: 50, x4: 50, x5: 400},
-        {sym: 'SYM4', x3: 15, x4: 60, x5: 175},
-        {sym: 'SYM5', x3: 15, x4: 60, x5: 275},
-        {sym: 'SYM6', x3: 10, x4: 40, x5: 75},
-        {sym: 'SYM7', x3: 5, x4: 45, x5: 50},
-        {sym: 'SYM8', x3: 5, x4: 20, x5: 75},
-        {sym: 'SYM9', x3: 2, x4: 13, x5: 60},
-        {sym: 'SYM10', x3: 2, x4: 13, x5: 60}
+        {sym: 'SYM3', x3: 20, x4: 100, x5: 400},
+        {sym: 'SYM4', x3: 10, x4: 60, x5: 250},
+        {sym: 'SYM5', x3: 10, x4: 50, x5: 200},
+        {sym: 'SYM6', x3: 10, x4: 40, x5: 150},
+        {sym: 'SYM7', x3: 5, x4: 35, x5: 70},
+        {sym: 'SYM8', x3: 5, x4: 30, x5: 60},
+        {sym: 'SYM9', x3: 4, x4: 25, x5: 50},
+        {sym: 'SYM10', x3: 3, x4: 20, x5: 40}
     ],
     data: [
         ['currency', 'user', 'defaultdenomination', 'denomination', 'Bet', 'totalcent1', 'cash1', 'totalcent2', 'cash2', 'totalcent3', 'cash3', 'totalcent4'],
@@ -95,6 +92,8 @@ var CONFIG = {
         ['PEN', 'UserPEN']
     ],
     symsOnReel: 3,
+    row : 3,
+    betLevel : 1,
     startPos: 0,
     posOnReel: 1
 
