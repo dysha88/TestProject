@@ -5,7 +5,8 @@ var events = {
     setGameSettings : [],
     settingsRequest : [],
     settingsResponse : [],
-    writingTextConfig_setText: []
+    writingTextConfig_setText: [],
+    setPosition : []
 };
 
 function addListener(eventName, functionCallback) {

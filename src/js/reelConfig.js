@@ -6,6 +6,7 @@ function ReelConfig(){
     this.startPos3 = -1;
     this.startPos4 = -1;
     this.startPos5 = -1;
+    this.previousStartPos = 0;
     this.previousReelStrip = [];
     this.strip1 = [];
     this.strip2 = [];
@@ -36,13 +37,16 @@ function ReelConfig(){
         console.log(me.outcomeStartPos);
 
         for(i = startPos + posOnReel + 1; i < reelSet.length; i++){
-            if(symbol == reelSet[i]){
+            if((symbol == reelSet[i]) && (i - posOnReel + CONFIG.symsOnReel <= reelSet.length) ){
                 console.log(symbol, reelSet, posOnReel, startPos);
                 console.log(me.outcomeStartPos);
                 me.outcomeStartPos = i - posOnReel;
                 console.log(me.outcomeStartPos);
                 return me.outcomeStartPos;
             }
+            //else {
+            //    return me.outcomeStartPos;
+            //}
         }
         console.error("No such combinations on reel");
         //return null;
@@ -50,9 +54,11 @@ function ReelConfig(){
 
     this.getStartPosForReelStripWithoutConcreteSymbol = function(symbol, reelSet, posOnReel, startPos){
         var i;
+        console.log(symbol, reelSet, posOnReel, startPos);
         for(i = startPos + posOnReel + 1; i < reelSet.length; i++){
             if(symbol != reelSet[i]){
                 me.outcomeStartPos2 = i - posOnReel;
+                console.log(me.outcomeStartPos2);
                 return me.outcomeStartPos2;
             }
         }
@@ -74,16 +80,22 @@ function ReelConfig(){
         //debugger;
         //console.log(includeConcreteSymbol);
         //console.log(unexceptableSyms);
+        console.log(me.previousStartPos, startPos, reelStrip);
+        //if(startPos == me.previousStartPos){
+        //    me.winCombination.push(startPos);
+        //    return reelStrip;
+        //}
         if(includeConcreteSymbol){
             for(i = 0; i < reelStrip.length; i++){
                 for(j = 0; j < unexceptableSyms.length; j++){
                     if(reelStrip[i] == unexceptableSyms[j]){
                         console.log(symbol, reelSet, posOnReel, startPos);
                         startPos = me.getStartPos(symbol, reelSet, posOnReel, startPos);
+                        me.previousStartPos = startPos;
                         console.log(startPos);
                         reelStrip = me.findReelStrip(startPos, reelSet, CONFIG.symsOnReel);
                         console.log(reelStrip);
-                        reelStrip = me.verifyReelStrip(symbol, reelStrip, CONFIG.unexceptableSyms.splice(0), startPos, true, reelSet, posOnReel);
+                        reelStrip = me.verifyReelStrip(symbol, reelStrip, CONFIG.unexceptableSyms, startPos, true, reelSet, posOnReel);
                         console.log(reelStrip);
                         return reelStrip;
                     }
@@ -91,36 +103,40 @@ function ReelConfig(){
             }
             me.winCombination.push(startPos);
             return reelStrip;
-        }
-        unexceptableSyms.push(CONFIG.symbol[1]);
-        //console.log(unexceptableSyms);
-        for(i = 0; i < reelStrip.length; i++){
-            for(j = 0; j < unexceptableSyms.length; j++){
-                if(reelStrip[i] == unexceptableSyms[j]){
-                    startPos = me.getStartPosForReelStripWithoutConcreteSymbol(symbol, reelSet, posOnReel, startPos);
-                    console.log(startPos);
-                    reelStrip = me.findReelStrip(startPos, reelSet, CONFIG.symsOnReel);
-                    console.log(reelStrip);
-                    unexceptableSyms.pop();
-                    reelStrip = me.verifyReelStrip(symbol, reelStrip, CONFIG.unexceptableSyms.splice(0), startPos, false, reelSet, posOnReel);
-                    console.log(reelStrip);
-                    return reelStrip;
+        } else {
+            unexceptableSyms.push(symbol);
+            //debugger;
+            console.log(unexceptableSyms);
+            for (i = 0; i < reelStrip.length; i++) {
+                for (j = 0; j < unexceptableSyms.length; j++) {
+                    if (reelStrip[i] == unexceptableSyms[j]) {
+                        startPos = me.getStartPosForReelStripWithoutConcreteSymbol(symbol, reelSet, posOnReel, startPos);
+                        console.log(startPos);
+                        reelStrip = me.findReelStrip(startPos, reelSet, CONFIG.symsOnReel);
+                        console.log(reelStrip);
+                        unexceptableSyms.pop();
+                        reelStrip = me.verifyReelStrip(symbol, reelStrip, CONFIG.unexceptableSyms, startPos, false, reelSet, posOnReel);
+                        console.log(reelStrip);
+                        return reelStrip;
+                    }
                 }
             }
+            unexceptableSyms.pop();
+            me.winCombination.push(startPos);
+            return reelStrip;
         }
-        me.winCombination.push(startPos);
-        return reelStrip;
     };
 
 
     this.verifyReelStripForSecondReel = function(symbol, reelStrip, unexceptableSyms, posOnReel){
         var i, j;
-        me.previousReelStrip = me.strip1;
-        me.previousReelStrip.splice(posOnReel,1);
-        console.log(me.previousReelStrip);
-        for(i = 0; i < me.previousReelStrip.length; i++){
-                unexceptableSyms.push(me.previousReelStrip[i]);
-        }
+        //debugger;
+        //me.previousReelStrip = me.strip1;
+        //me.previousReelStrip.splice(posOnReel,1);
+        //console.log(me.previousReelStrip);
+        //for(i = 0; i < me.previousReelStrip.length; i++){
+        //        unexceptableSyms.push(me.previousReelStrip[i]);
+        //}
         console.log(unexceptableSyms);
         for(i = 0; i < reelStrip.length; i++){
             for(j = 0; j < unexceptableSyms.length; j++){
@@ -129,16 +145,19 @@ function ReelConfig(){
                     console.log(me.startPos2);
                     me.strip2 = me.findReelStrip(me.startPos2, CONFIG.reels[1], CONFIG.symsOnReel);
                     console.log(me.strip2);
-                    for(i = 0; i < me.previousReelStrip.length; i++){
-                        unexceptableSyms.pop();
-                    }
+                    //for(i = 0; i < me.previousReelStrip.length; i++){
+                    //    unexceptableSyms.pop();
+                    //}
                     console.log(unexceptableSyms);
-                    me.strip2 = me.verifyReelStripForSecondReel(symbol, me.strip2, me.unexceptableSyms, posOnReel);
+                    me.strip2 = me.verifyReelStripForSecondReel(symbol, me.strip2, CONFIG.unexceptableSyms, posOnReel);
                     //console.log(me.finalReelStrip2);
                     return me.strip2;
                 }
             }
         }
+        //for(i = 0; i < me.previousReelStrip.length; i++){
+        //    unexceptableSyms.pop();
+        //}
         me.winCombination.push(me.startPos2);
         return me.strip2;
     };
@@ -181,7 +200,7 @@ function ReelConfig(){
         me.strip1 = me.findReelStrip(me.startPos1, CONFIG.reels[0], CONFIG.symsOnReel);
         console.log(me.strip1);
 
-        me.strip1 = me.verifyReelStrip(neededSymbol, me.strip1, CONFIG.unexceptableSyms.splice(0), me.startPos1, true, CONFIG.reels[0], betLine[0]);
+        me.strip1 = me.verifyReelStrip(neededSymbol, me.strip1, CONFIG.unexceptableSyms, me.startPos1, true, CONFIG.reels[0], betLine[0]);
         console.log(me.strip1);
 
 
@@ -192,7 +211,7 @@ function ReelConfig(){
         me.strip2 = me.findReelStrip(me.startPos2, CONFIG.reels[1], CONFIG.symsOnReel);
         //console.log(me.strip2);
 
-        me.strip2 = me.verifyReelStripForSecondReel(neededSymbol, me.strip2, me.unexceptableSyms.splice(0), betLine[1]);
+        me.strip2 = me.verifyReelStripForSecondReel(neededSymbol, me.strip2, CONFIG.unexceptableSyms, betLine[1]);
         //console.log(me.strip2);
 
 
@@ -205,19 +224,19 @@ function ReelConfig(){
         //console.log(me.strip3);
         //console.log(me.startPos3);
 
-        me.strip3 = me.verifyReelStrip(neededSymbol, me.strip3, CONFIG.unexceptableSyms.splice(0), me.startPos3, true, CONFIG.reels[2], betLine[2]);
-        //console.log(me.strip3);
+        me.strip3 = me.verifyReelStrip(neededSymbol, me.strip3, CONFIG.unexceptableSyms, me.startPos3, true, CONFIG.reels[2], betLine[2]);
+        console.log(me.strip3);
 
 
         me.startPos4 = me.getStartPos(neededSymbol, CONFIG.reels[3], betLine[3], me.startPos4);
-        //console.log(me.startPos4);
+        console.log(me.startPos4);
 
 
         me.strip4 = me.findReelStrip(me.startPos4, CONFIG.reels[3], CONFIG.symsOnReel);
-        //console.log(me.strip4);
+        console.log(me.strip4);
 
-        me.strip4 = me.verifyReelStrip(neededSymbol, me.strip4, CONFIG.unexceptableSyms.splice(0), me.startPos4, fourWinSymbols, CONFIG.reels[3], betLine[3]);
-        //console.log(me.strip4);
+        me.strip4 = me.verifyReelStrip(neededSymbol, me.strip4, CONFIG.unexceptableSyms, me.startPos4, fourWinSymbols, CONFIG.reels[3], betLine[3]);
+        console.log(me.strip4);
 
 
         me.startPos5 = me.getStartPos(neededSymbol, CONFIG.reels[4], betLine[4], me.startPos5);
@@ -227,7 +246,7 @@ function ReelConfig(){
         me.strip5 = me.findReelStrip(me.startPos5, CONFIG.reels[4], CONFIG.symsOnReel);
         //console.log(me.strip5);
 
-        me.strip5 = me.verifyReelStrip(neededSymbol, me.strip5, CONFIG.unexceptableSyms.splice(0), me.startPos5, fiveWinSymbols, CONFIG.reels[4], betLine[4]);
+        me.strip5 = me.verifyReelStrip(neededSymbol, me.strip5, CONFIG.unexceptableSyms, me.startPos5, fiveWinSymbols, CONFIG.reels[4], betLine[4]);
         //console.log(me.strip5);
 
         console.error(me.winCombination);
