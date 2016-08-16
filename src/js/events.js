@@ -6,7 +6,9 @@ var events = {
     settingsRequest : [],
     settingsResponse : [],
     writingTextConfig_setText: [],
-    setPosition : []
+    setPosition : [],
+    setPayout : [],
+    writingTextConfig_setPayout : []
 };
 
 function addListener(eventName, functionCallback) {

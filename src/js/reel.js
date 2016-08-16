@@ -13,6 +13,7 @@ function Reel(reelStrip, unexceptableSyms, lessUnexceptableSym) {
         if(dbg){
             //debugger;
         }
+        //console.log(me.reelStrip);
 
         for (i = 0; i < reelStripLength; i++) {
             if (me.reelStrip[i + outcomePos] != undefined && me.reelStrip[i + outcomePos] == symbol) {
@@ -42,6 +43,16 @@ function Reel(reelStrip, unexceptableSyms, lessUnexceptableSym) {
 
 
         return me.position;
+    };
+
+    this.findWinReelStrip = function(startPos, reelStrip){
+        var result = [],
+            i;
+
+        for(i = 0; i < CONFIG.symsOnReel; i++){
+            result.push(reelStrip[startPos + i]);
+        }
+        return result;
     };
 
 
